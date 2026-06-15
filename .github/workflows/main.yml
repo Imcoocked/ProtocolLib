@@ -17,6 +17,12 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Force Java 21 target
+        run: |
+          sed -i 's/JavaVersion.VERSION_[0-9]*/JavaVersion.VERSION_21/g' build.gradle
+          sed -i 's/sourceCompatibility = .*/sourceCompatibility = JavaVersion.VERSION_21/g' build.gradle
+          sed -i 's/targetCompatibility = .*/targetCompatibility = JavaVersion.VERSION_21/g' build.gradle
+
       - name: Build with Gradle
         run: ./gradlew shadowJar -DskipTests
 
