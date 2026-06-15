@@ -1,4 +1,4 @@
-name: ProtocolLib full build lifecycle
+name: ProtocolLibbbb
 on:
   workflow_dispatch:
 jobs:
