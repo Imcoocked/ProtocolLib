@@ -19,9 +19,11 @@ jobs:
 
       - name: Force Java 21 target
         run: |
-          sed -i 's/JavaVersion.VERSION_[0-9]*/JavaVersion.VERSION_21/g' build.gradle
-          sed -i 's/sourceCompatibility = .*/sourceCompatibility = JavaVersion.VERSION_21/g' build.gradle
-          sed -i 's/targetCompatibility = .*/targetCompatibility = JavaVersion.VERSION_21/g' build.gradle
+          find . -name "build.gradle" -o -name "build.gradle.kts" | head -20
+          find . -name "build.gradle" | xargs sed -i 's/JavaVersion.VERSION_[0-9]*/JavaVersion.VERSION_21/g'
+          find . -name "build.gradle" | xargs sed -i 's/sourceCompatibility = .*/sourceCompatibility = JavaVersion.VERSION_21/g'
+          find . -name "build.gradle" | xargs sed -i 's/targetCompatibility = .*/targetCompatibility = JavaVersion.VERSION_21/g'
+          find . -name "build.gradle.kts" | xargs sed -i 's/JavaVersion.VERSION_[0-9]*/JavaVersion.VERSION_21/g'
 
       - name: Build with Gradle
         run: ./gradlew shadowJar -DskipTests
