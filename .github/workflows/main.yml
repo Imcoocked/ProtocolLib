@@ -1,34 +1,31 @@
-name: Build ProtocolLib for Java 21
+name: ProtocolLib full build lifecycle
 on:
   workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout ProtocolLib
+      - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          repository: dmulloy2/ProtocolLib
-          ref: master
 
-      - name: Set up JDK 21
+      - name: Setup java
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
           distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
 
       - name: Force Java 21 target
         run: |
-          sed -i 's/JavaVersion.VERSION_[0-9]*/JavaVersion.VERSION_21/g' build.gradle.kts
-          sed -i 's/sourceCompatibility = .*/sourceCompatibility = JavaVersion.VERSION_21/g' build.gradle.kts
-          sed -i 's/targetCompatibility = .*/targetCompatibility = JavaVersion.VERSION_21/g' build.gradle.kts
-          cat build.gradle.kts | grep -i "version\|compat\|java" | head -20
+          sed -i 's/JavaLanguageVersion.of([0-9]*)/JavaLanguageVersion.of(21)/g' build.gradle.kts
+          echo "--- Verifying ---"
+          grep -i "languageversion" build.gradle.kts
 
-      - name: Build with Gradle
-        run: ./gradlew shadowJar -DskipTests
+      - name: Run gradle build lifecycle
+        run: ./gradlew build shadowJar --no-daemon
 
-      - name: Upload jar
+      - name: Upload plugin file
         uses: actions/upload-artifact@v4
         with:
           name: ProtocolLib-java21
-          path: build/libs/ProtocolLib*.jar
+          path: build/libs/ProtocolLib.jar
